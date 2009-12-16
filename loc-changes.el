@@ -22,29 +22,29 @@ proclaim is okay to use in a Lisp program."
        line-number last-line))
     (goto-char (point-min))
     (forward-line (1- line-number)))
-)
+  )
 
-
-(defun loc-changes-add (line-number &optional opt-buffer)
+(defun loc-changes-add-and-goto (line-number &optional opt-buffer)
   "Add a marker at LINE-NUMBER and record LINE-NUMBER and its
 marker association in `loc-changes-alist'."
   (let ((buffer (or opt-buffer (current-buffer))))
     (with-current-buffer buffer
-      (loc-changes-goto-line buffer)
+      (loc-changes-goto-line line-number)
       (setq loc-changes-alist 
-	    (cons line-number (point-marker)) 
-	    loc-changes-alist)
+	    (cons (cons line-number (point-marker))
+		  loc-changes-alist))
       ))
-)
+  )
 
-(defun loc-changes-clear (&optional opt-buffer)
+(defun loc-changes-clear-buffer (&optional opt-buffer)
   "Remove all location-tracking associations in BUFFER."
+  (interactive "bbuffer: ")
   (let ((buffer (or opt-buffer (current-buffer)))
 	)
     (with-current-buffer buffer
       (setq loc-changes-alist '())
       ))
-)
+  )
 
 (defun loc-changes-resync (&optional opt-buffer)
   "Take existing marks and use the current (updated) positions for each of those.
@@ -59,7 +59,20 @@ so that its positions are will be reflected."
 previous location marks. Normally if the position hasn't been
 seen before, we will add a new mark for this position. However if
 NO-UPDATE is set, no mark is added."
-  (error "To be continued....")
+  (unless (wholenump position)
+    (error "Expecting line-number parameter `%s' to be a whole number"
+	   position))
+  (let ((elt (assq position loc-changes-alist)))
+    (if elt
+	(let ((marker (cdr elt)))
+	  (unless (markerp marker)
+	    (error "Internal error: loc-changes-alist is not a marker"))
+	  (goto-char (marker-position marker)))
+      (if no-update
+	  (loc-changes-goto-line position)
+	(loc-changes-add-and-goto position))
+      )
+    )
   )
 
 (provide 'loc-changes)
