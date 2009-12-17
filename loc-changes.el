@@ -24,15 +24,19 @@ proclaim is okay to use in a Lisp program."
     (forward-line (1- line-number)))
   )
 
+(defun loc-changes-add-elt (pos)
+  "Add an element `loc-changes-alist'. The car will be POS and a
+marker for it will be created at the point."
+  (setq loc-changes-alist
+	(cons (cons pos (point-marker)) loc-changes-alist)))
+
 (defun loc-changes-add-and-goto (line-number &optional opt-buffer)
   "Add a marker at LINE-NUMBER and record LINE-NUMBER and its
 marker association in `loc-changes-alist'."
   (let ((buffer (or opt-buffer (current-buffer))))
     (with-current-buffer buffer
       (loc-changes-goto-line line-number)
-      (setq loc-changes-alist 
-	    (cons (cons line-number (point-marker))
-		  loc-changes-alist))
+      (loc-changes-add-elt line-number)
       ))
   )
 
@@ -46,13 +50,21 @@ marker association in `loc-changes-alist'."
       ))
   )
 
-(defun loc-changes-resync (&optional opt-buffer)
-  "Take existing marks and use the current (updated) positions for each of those.
+(defun loc-changes-reset-position (&optional opt-buffer no-insert)
+  "Update `loc-changes-alist' the line number of point is what is 
+so its line line number at point Take existing marks and use the current (updated) positions for each of those.
 This may be useful for example in debugging if you save the
 buffer and then cause the debugger to reread/reevaluate the file
 so that its positions are will be reflected."
-  (error "To be continued....")
-  )
+  (let* ((line-number (line-number-at-pos (point)))
+	 (elt (assq line-number loc-changes-alist)))
+    (if elt
+	(setcdr elt (point))
+      (unless no-insert
+	(loc-changes-add-elt line-number)
+	)
+      ))
+)
 
 (defun loc-changes-goto (position &optional opt-buffer no-update)
   "Go to the position inside BUFFER taking into account the
