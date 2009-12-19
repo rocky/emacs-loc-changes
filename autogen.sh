@@ -1,2 +1,6 @@
 #!/bin/sh
-autoreconf -vfi
+autoreconf -vfi && \
+autoconf && {
+  echo "Running configure with --enable-maintainer-mode $@"
+  ./configure --enable-maintainer-mode $@
+}
