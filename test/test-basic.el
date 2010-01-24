@@ -10,6 +10,7 @@
 	   (specify "loc-changes-goto-line error conditions"
 		    (assert-raises error (loc-changes-goto-line "foo"))
 		    (message "buffer %s" (current-buffer))
+		    (assert-raises error (loc-changes-goto-line "0"))
 		    (assert-raises error (loc-changes-goto-line 0))
 		    (assert-raises error (loc-changes-goto-line 10000)))
 	   (specify "loc-changes-goto-line"
@@ -17,6 +18,31 @@
 		      (set-buffer sample-buffer)
 		      (loc-changes-goto-line 5)
 		      (assert-equal 5 (line-number-at-pos (point)))))
+	   (specify "loc-changes-goto-line-with-column"
+		    (save-excursion
+		      (set-buffer sample-buffer)
+		      (loc-changes-goto-line 1 3)
+		      (assert-equal 1 (line-number-at-pos (point)))
+		      (assert-equal 2 (current-column))
+		      )
+		    )
+	   (specify "loc-changes-goto-line-invalid-column"
+		    (save-excursion
+		      (set-buffer sample-buffer)
+		      (loc-changes-goto-line 1 300)
+		      (assert-equal 1 (line-number-at-pos (point)))
+		      (assert-equal 0 (current-column))
+		      (assert-t (or
+				 (not (current-message))
+				 (string-match "^Column ignored." (current-message))))
+		      (loc-changes-goto-line 2 -5)
+		      (assert-equal 2 (line-number-at-pos (point)))
+		      (assert-equal 0 (current-column))
+		      (assert-t (or
+				 (not (current-message))
+				 (string-match "^Column ignored." (current-message))))
+		      )
+		    )
 	   (specify "loc-changes-clear-buffer null"
 		    (loc-changes-clear-buffer)
 		    (assert-equal '() loc-changes-alist))

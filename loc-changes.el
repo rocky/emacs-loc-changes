@@ -6,22 +6,50 @@ the marker"
   )
 
 
-(defun loc-changes-goto-line (line-number)
-  "The Emacs `goto-line' docstring says it is the wrong thing to
-use that function in a Lisp program. So here is something that I
+(defun loc-changes-goto-line (line-number &optional column-number)
+  "Position `point' at LINE-NUMBER of the current buffer. If
+COLUMN-NUMBER is given, position `point' at that column just
+before that column number within the line. Note that the beginning of
+the line starts at column 0, so the column number display will be one less
+than COLUMN-NUMBER. For example COLUMN-NUMBER 1 will set before the first
+column on the line and show 0. 
+
+The Emacs `goto-line' docstring says it is the wrong thing to use
+that function in a Lisp program. So here is something that I
 proclaim is okay to use in a Lisp program."
   (unless (wholenump line-number)
     (error "Expecting line-number parameter `%s' to be a whole number"
 	   line-number))
   (unless (> line-number 0)
-    (error "Expecting line-number parameter to be greater than 0"))
+    (error "Expecting line-number parameter `%d' to be greater than 0"
+	   line-number))
   (let ((last-line (line-number-at-pos (point-max))))
     (unless (<= line-number last-line)
       (error 
        "Line number %d should not exceed %d, the number of lines in the buffer"
        line-number last-line))
     (goto-char (point-min))
-    (forward-line (1- line-number)))
+    (forward-line (1- line-number))
+    (if column-number
+	(let ((last-column 
+	       (save-excursion
+		 (move-end-of-line 1)
+		 (current-column))))
+	  (cond ((not (wholenump column-number))
+		 (message 
+		  "Column ignored. Expecting column-number parameter `%s' to be a whole number"
+			  column-number))
+		((<= column-number 0)
+		 (message 
+		  "Column ignored. Expecting column-number parameter `%d' to be a greater than 1"
+			  column-number))
+		((>= column-number last-column)
+		 (message 
+		  "Column ignored. Expecting column-number parameter `%d' to be a less than %d"
+		   column-number last-column))
+		(t (forward-char (1- column-number)))))
+      )
+    )
   )
 
 (defun loc-changes-add-elt (pos)
