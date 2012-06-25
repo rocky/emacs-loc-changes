@@ -12,7 +12,7 @@ check: $(CHECK_FILES)
 
 # FIGURE out how to DRY the run rules.
 test-basic.run:
-	(cd $(srcdir)/test && $(EMACS) -batch -Q -l $(@:.run=.el) )
+	(cd $(srcdir)/test && $(EMACS)  --batch --no-site-file --no-splash --load $(@:.run=.el) )
 
 .PHONY: $(CHECK_FILES)
 

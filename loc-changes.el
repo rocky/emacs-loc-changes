@@ -49,6 +49,7 @@ proclaim is okay to use in a Lisp program."
 		   column-number last-column))
 		(t (forward-char (1- column-number)))))
       )
+    (redisplay)
     )
   )
 
