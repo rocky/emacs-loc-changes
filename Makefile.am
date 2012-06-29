@@ -1,3 +1,5 @@
+SUBDIRS = test
+
 lisp_files := $(wildcard *.el)
 test_files := $(wildcard test/test-*.el)
 
@@ -7,14 +9,7 @@ CHECK_FILES = $(notdir $(test_files:.el=.run))
 
 lisp_LISP = $(lisp_files)
 
-check: $(CHECK_FILES)
-
-
-# FIGURE out how to DRY the run rules.
-test-basic.run:
-	(cd $(srcdir)/test && $(EMACS)  --batch --no-site-file --no-splash --load $(@:.run=.el) )
-
-.PHONY: $(CHECK_FILES)
+check: test
 
 if MAINTAINER_MODE
 
@@ -26,7 +21,6 @@ ACLOCAL_AMFLAGS=-I .
 
 endif
 
-test: check
 
 
 
