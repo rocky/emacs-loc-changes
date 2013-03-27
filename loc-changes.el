@@ -1,3 +1,5 @@
+;;; loc-changes.el --- Helps the user keep track of positions even after change.
+
 ;; Author: Rocky Bernstein
 ;; Version: 0.1.0
 ;; URL: http://github.com/rocky/emacs-loc-changes
@@ -18,6 +20,17 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see
 ;; <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+
+;; The intent of this package is to let a user to set marks in a buffer prior
+;; to changes so that we can track the original positions after the change.
+
+;; One common use is say when debugging a program.  The debugger has its static
+;; notion of the file and positions inside that.  However it may be convenient
+;; for a programmer to edit the program but not change execution of the program.
+
+;;; Code:
 
 (make-variable-buffer-local 'loc-changes-alist)
 (defvar loc-changes-alist '()
@@ -138,3 +151,5 @@ NO-UPDATE is set, no mark is added."
   )
 
 (provide 'loc-changes)
+
+;;; loc-changes.el ends here
