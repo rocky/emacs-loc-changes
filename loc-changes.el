@@ -12,7 +12,7 @@ COLUMN-NUMBER is given, position `point' at that column just
 before that column number within the line. Note that the beginning of
 the line starts at column 0, so the column number display will be one less
 than COLUMN-NUMBER. For example COLUMN-NUMBER 1 will set before the first
-column on the line and show 0. 
+column on the line and show 0.
 
 The Emacs `goto-line' docstring says it is the wrong thing to use
 that function in a Lisp program. So here is something that I
@@ -25,26 +25,26 @@ proclaim is okay to use in a Lisp program."
 	   line-number))
   (let ((last-line (line-number-at-pos (point-max))))
     (unless (<= line-number last-line)
-      (error 
+      (error
        "Line number %d should not exceed %d, the number of lines in the buffer"
        line-number last-line))
     (goto-char (point-min))
     (forward-line (1- line-number))
     (if column-number
-	(let ((last-column 
+	(let ((last-column
 	       (save-excursion
 		 (move-end-of-line 1)
 		 (current-column))))
 	  (cond ((not (wholenump column-number))
-		 (message 
+		 (message
 		  "Column ignored. Expecting column-number parameter `%s' to be a whole number"
 			  column-number))
 		((<= column-number 0)
-		 (message 
+		 (message
 		  "Column ignored. Expecting column-number parameter `%d' to be a greater than 1"
 			  column-number))
 		((>= column-number last-column)
-		 (message 
+		 (message
 		  "Column ignored. Expecting column-number parameter `%d' to be a less than %d"
 		   column-number last-column))
 		(t (forward-char (1- column-number)))))
@@ -80,7 +80,7 @@ marker association in `loc-changes-alist'."
   )
 
 (defun loc-changes-reset-position (&optional opt-buffer no-insert)
-  "Update `loc-changes-alist' the line number of point is what is 
+  "Update `loc-changes-alist' the line number of point is what is
 so its line line number at point Take existing marks and use the current (updated) positions for each of those.
 This may be useful for example in debugging if you save the
 buffer and then cause the debugger to reread/reevaluate the file
