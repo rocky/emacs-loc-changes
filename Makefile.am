@@ -25,5 +25,5 @@ test: check
 check-short:
 	$(MAKE) check 2>&1  | ruby make-check-filter.rb
 
-check: 
+check:
 	$(MAKE) -C test $@
