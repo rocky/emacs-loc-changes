@@ -1,4 +1,4 @@
-;;; loc-changes.el --- Helps the user and programs keep track of positions even after buffer changes.
+;;; loc-changes.el --- Helps users and programs keep track of positions even after buffer changes.
 
 ;; Author: Rocky Bernstein
 ;; Version: 0.1.0
