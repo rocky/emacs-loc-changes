@@ -1,20 +1,12 @@
+lispdir = @lispdir@
 lisp_files := $(wildcard *.el)
-test_files := $(wildcard test/test-*.el)
+lisp_LISP = $(lisp_files)
+
+include common.mk
 
 EXTRA_DIST = $(lisp_files) $(test_files) README.textile
 
-CHECK_FILES = $(notdir $(test_files:.el=.run))
-
-lisp_LISP = $(lisp_files)
-
-check: $(CHECK_FILES)
-
-
-# FIGURE out how to DRY the run rules.
-test-basic.run:
-	(cd $(srcdir)/test && $(EMACS) -batch -Q -l $(@:.run=.el) )
-
-.PHONY: $(CHECK_FILES)
+test_files := $(wildcard test/test-*.el)
 
 if MAINTAINER_MODE
 
@@ -26,8 +18,12 @@ ACLOCAL_AMFLAGS=-I .
 
 endif
 
+#: Run all tests
 test: check
 
+#: Run all tests without bloated output
+check-short:
+	$(MAKE) check 2>&1  | ruby make-check-filter.rb
 
-
-
+check: 
+	$(MAKE) -C test $@

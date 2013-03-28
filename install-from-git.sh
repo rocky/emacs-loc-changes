@@ -20,7 +20,7 @@ for program in git make $need_sudo ; do
     fi
 done
 
-packages=emacs-{test-unit,load-relative,loc-changes,dbgr}
+packages=emacs-{test-simple,load-relative,loc-changes,dbgr}
 for pkg in $packages ; do 
     echo '******************************************'
     echo Trying to install ${pkg}...
