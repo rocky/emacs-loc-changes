@@ -5,7 +5,7 @@ lisp_LISP = $(lisp_files)
 
 include common.mk
 
-EXTRA_DIST = $(lisp_files) $(test_files) README.textile
+EXTRA_DIST = $(lisp_files) $(test_files) README.md THANKS
 
 test_files := $(wildcard test/test-*.el)
 
