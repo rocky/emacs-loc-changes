@@ -5,7 +5,6 @@
 (test-simple-start)
 
 (setq sample-buffer (find-file-noselect "./sample.txt"))
-(note "basic-tests")
 
 (note "loc-changes-goto-line error conditions")
 (assert-raises error (loc-changes-goto-line "foo"))

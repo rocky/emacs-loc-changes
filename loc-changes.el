@@ -1,3 +1,37 @@
+;;; loc-changes.el --- Helps the user keep track of positions even after change.
+
+;; Author: Rocky Bernstein
+;; Version: 0.1.0
+;; URL: http://github.com/rocky/emacs-loc-changes
+;; Compatibility: GNU Emacs 24.x
+
+;;  Copyright (C) 2013 Rocky Bernstein <rocky@gnu.org>
+
+;; This program is free software: you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation, either version 3 of the
+;; License, or (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful, but
+;; WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see
+;; <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+
+;; The intent of this package is to let a user to set marks in a buffer prior
+;; to changes so that we can track the original positions after the change.
+
+;; One common use is say when debugging a program.  The debugger has its static
+;; notion of the file and positions inside that.  However it may be convenient
+;; for a programmer to edit the program but not change execution of the program.
+
+;;; Code:
+
 (make-variable-buffer-local 'loc-changes-alist)
 (defvar loc-changes-alist '()
   "A buffer-local association-list (alist) of line numbers and
@@ -12,7 +46,7 @@ COLUMN-NUMBER is given, position `point' at that column just
 before that column number within the line. Note that the beginning of
 the line starts at column 0, so the column number display will be one less
 than COLUMN-NUMBER. For example COLUMN-NUMBER 1 will set before the first
-column on the line and show 0. 
+column on the line and show 0.
 
 The Emacs `goto-line' docstring says it is the wrong thing to use
 that function in a Lisp program. So here is something that I
@@ -25,30 +59,31 @@ proclaim is okay to use in a Lisp program."
 	   line-number))
   (let ((last-line (line-number-at-pos (point-max))))
     (unless (<= line-number last-line)
-      (error 
+      (error
        "Line number %d should not exceed %d, the number of lines in the buffer"
        line-number last-line))
     (goto-char (point-min))
     (forward-line (1- line-number))
     (if column-number
-	(let ((last-column 
+	(let ((last-column
 	       (save-excursion
 		 (move-end-of-line 1)
 		 (current-column))))
 	  (cond ((not (wholenump column-number))
-		 (message 
+		 (message
 		  "Column ignored. Expecting column-number parameter `%s' to be a whole number"
 			  column-number))
 		((<= column-number 0)
-		 (message 
+		 (message
 		  "Column ignored. Expecting column-number parameter `%d' to be a greater than 1"
 			  column-number))
 		((>= column-number last-column)
-		 (message 
+		 (message
 		  "Column ignored. Expecting column-number parameter `%d' to be a less than %d"
 		   column-number last-column))
 		(t (forward-char (1- column-number)))))
       )
+    (redisplay)
     )
   )
 
@@ -79,7 +114,7 @@ marker association in `loc-changes-alist'."
   )
 
 (defun loc-changes-reset-position (&optional opt-buffer no-insert)
-  "Update `loc-changes-alist' the line number of point is what is 
+  "Update `loc-changes-alist' the line number of point is what is
 so its line line number at point Take existing marks and use the current (updated) positions for each of those.
 This may be useful for example in debugging if you save the
 buffer and then cause the debugger to reread/reevaluate the file
@@ -116,3 +151,5 @@ NO-UPDATE is set, no mark is added."
   )
 
 (provide 'loc-changes)
+
+;;; loc-changes.el ends here
