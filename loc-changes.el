@@ -30,6 +30,9 @@
 ;; notion of the file and positions inside that.  However it may be convenient
 ;; for a programmer to edit the program but not change execution of the program.
 
+;; Another use might be in a compilation buffer for errors and
+;; warnings which refer to file and line positions.
+
 ;;; Code:
 
 (make-variable-buffer-local 'loc-changes-alist)
@@ -39,7 +42,7 @@ their corresponding markers in the buffer. The 'key' is the line number; the val
 the marker"
   )
 
-
+;;;###autoload
 (defun loc-changes-goto-line (line-number &optional column-number)
   "Position `point' at LINE-NUMBER of the current buffer. If
 COLUMN-NUMBER is given, position `point' at that column just
@@ -48,9 +51,34 @@ the line starts at column 0, so the column number display will be one less
 than COLUMN-NUMBER. For example COLUMN-NUMBER 1 will set before the first
 column on the line and show 0.
 
-The Emacs `goto-line' docstring says it is the wrong thing to use
-that function in a Lisp program. So here is something that I
-proclaim is okay to use in a Lisp program."
+The Emacs `goto-line' docstring says it is the wrong to use that
+function in a Lisp program. So here is something that I proclaim
+is okay to use in a Lisp program."
+  (interactive
+   (if (and current-prefix-arg (not (consp current-prefix-arg)))
+       (list (prefix-numeric-value current-prefix-arg))
+     ;; Look for a default, a number in the buffer at point.
+     (let* ((default
+	      (save-excursion
+		(skip-chars-backward "0-9")
+		(if (looking-at "[0-9]")
+		    (string-to-number
+		     (buffer-substring-no-properties
+		      (point)
+		      (progn (skip-chars-forward "0-9")
+			     (point)))))))
+	    ;; Decide if we're switching buffers.
+	    (buffer
+	     (if (consp current-prefix-arg)
+		 (other-buffer (current-buffer) t)))
+	    (buffer-prompt
+	     (if buffer
+		 (concat " in " (buffer-name buffer))
+	       "")))
+       ;; Read the argument, offering that number (if any) as default.
+       (list (read-number (format "Goto line%s: " buffer-prompt)
+                          (list default (line-number-at-pos)))
+	     buffer))))
   (unless (wholenump line-number)
     (error "Expecting line-number parameter `%s' to be a whole number"
 	   line-number))
@@ -93,9 +121,36 @@ marker for it will be created at the point."
   (setq loc-changes-alist
 	(cons (cons pos (point-marker)) loc-changes-alist)))
 
+;;;###autoload
 (defun loc-changes-add-and-goto (line-number &optional opt-buffer)
   "Add a marker at LINE-NUMBER and record LINE-NUMBER and its
 marker association in `loc-changes-alist'."
+  (interactive
+   (if (and current-prefix-arg (not (consp current-prefix-arg)))
+       (list (prefix-numeric-value current-prefix-arg))
+     ;; Look for a default, a number in the buffer at point.
+     (let* ((default
+	      (save-excursion
+		(skip-chars-backward "0-9")
+		(if (looking-at "[0-9]")
+		    (string-to-number
+		     (buffer-substring-no-properties
+		      (point)
+		      (progn (skip-chars-forward "0-9")
+			     (point)))))))
+	    ;; Decide if we're switching buffers.
+	    (buffer
+	     (if (consp current-prefix-arg)
+		 (other-buffer (current-buffer) t)))
+	    (buffer-prompt
+	     (if buffer
+		 (concat " in " (buffer-name buffer))
+	       "")))
+       ;; Read the argument, offering that number (if any) as default.
+       (list (read-number (format "Goto line%s: " buffer-prompt)
+                          (list default (line-number-at-pos)))
+	     buffer))))
+
   (let ((buffer (or opt-buffer (current-buffer))))
     (with-current-buffer buffer
       (loc-changes-goto-line line-number)
@@ -103,6 +158,7 @@ marker association in `loc-changes-alist'."
       ))
   )
 
+;;;###autoload
 (defun loc-changes-clear-buffer (&optional opt-buffer)
   "Remove all location-tracking associations in BUFFER."
   (interactive "bbuffer: ")
@@ -113,21 +169,32 @@ marker association in `loc-changes-alist'."
       ))
   )
 
+;;;###autoload
 (defun loc-changes-reset-position (&optional opt-buffer no-insert)
-  "Update `loc-changes-alist' the line number of point is what is
-so its line line number at point Take existing marks and use the current (updated) positions for each of those.
+  "Update `loc-changes-alist' so that the line number of point is
+used to when aline number is requested.
+
+Updates any existing line numbers referred to in marks at this
+position.
+
 This may be useful for example in debugging if you save the
 buffer and then cause the debugger to reread/reevaluate the file
 so that its positions are will be reflected."
+  (interactive "")
   (let* ((line-number (line-number-at-pos (point)))
 	 (elt (assq line-number loc-changes-alist)))
-    (if elt
-	(setcdr elt (point))
-      (unless no-insert
-	(loc-changes-add-elt line-number)
-	)
-      ))
-)
+    (let ((buffer (or opt-buffer (current-buffer)))
+	  )
+      (with-current-buffer buffer
+	(if elt
+	    (setcdr elt (point))
+	  (unless no-insert
+	    (loc-changes-add-elt line-number)
+	    )
+	  ))
+      )
+    ))
+
 
 (defun loc-changes-goto (position &optional opt-buffer no-update)
   "Go to the position inside BUFFER taking into account the
