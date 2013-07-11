@@ -9,7 +9,7 @@ script:
   - curl -fsSkL https://raw.github.com/rejeep/carton/master/go | sh
   - bash ~/.carton/bin/carton
   - EMACSLOADPATH=$(emacs -batch -q -no-site-file -eval "(message (apply 'concat (mapcar (lambda(x) (concat x \":\")) load-path)))" 2>&1)
-  - test_simple=/home/travis/build/rocky/emacs-loc-changes/elpa/test-simple-*/
+  - test_simple=/home/travis/build/rocky/emacs-loc-changes/elpa/test-simple-20130710.1126
   - EMACSLOADPATH=$EMACSLOADPATH:$test_simple
   - # ls -lR /home/travis
   - echo $EMACSLOADPATH
