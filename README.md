@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/rocky/emacs-loc-changes.png)](https://travis-ci.org/rocky/emacs-loc-changes)
+
 Keeps track of important buffer positions after buffer changes.
 
 Sometimes it is useful to make note of certain locations in program
