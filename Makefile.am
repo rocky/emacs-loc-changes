@@ -11,6 +11,10 @@ lisp_LISP = $(lisp_files)
 
 check: test
 
+#: Run all tests without bloated output
+check-short:
+	$(MAKE) check 2>&1  | ruby make-check-filter.rb
+
 if MAINTAINER_MODE
 
 CL = ChangeLog
