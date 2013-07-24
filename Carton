@@ -1,0 +1,7 @@
+(source "melpa" "http://melpa.milkbox.net/packages/")
+
+(package "loc-change" "0.1.0"
+	 "Unit tests for GNU emacs that work interactively and in batch")
+
+(development
+	(depends-on "test-simple"))

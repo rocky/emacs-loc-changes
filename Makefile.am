@@ -1,15 +1,13 @@
-SUBDIRS = test
+lispdir = @lispdir@
 
 lisp_files := $(wildcard *.el)
-test_files := $(wildcard test/test-*.el)
-
-EXTRA_DIST = $(lisp_files) $(test_files) README.textile
-
-CHECK_FILES = $(notdir $(test_files:.el=.run))
-
 lisp_LISP = $(lisp_files)
 
-check: test
+include common.mk
+
+EXTRA_DIST = $(lisp_files) $(test_files) README.md THANKS
+
+test_files := $(wildcard test/test-*.el)
 
 #: Run all tests without bloated output
 check-short:
@@ -25,7 +23,12 @@ ACLOCAL_AMFLAGS=-I .
 
 endif
 
+#: Run all tests
+test: check
 
+#: Run all tests without bloated output
+check-short:
+	$(MAKE) check 2>&1  | ruby make-check-filter.rb
 
-
-
+check:
+	$(MAKE) -C test $@
