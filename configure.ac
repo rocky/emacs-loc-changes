@@ -1,4 +1,4 @@
-AC_INIT(emacs-loc-changes, 1.0)
+AC_INIT(emacs-loc-changes, 1.1)
 AC_CONFIG_SRCDIR(loc-changes.el)
 AM_INIT_AUTOMAKE
 AM_MAINTAINER_MODE
