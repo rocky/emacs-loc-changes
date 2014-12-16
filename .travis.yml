@@ -1,16 +1,18 @@
-language: emacs
+language: emacs-lisp
 
-install:
-  # Install emacs.
-  - "sudo apt-get install emacs23-nox"
+env:
+  - EMACS=emacs24
+
+before_install:
+  - if [ "$EMACS" = 'emacs24' ]; then
+      sudo add-apt-repository -y ppa:cassou/emacs &&
+      sudo apt-get update -qq &&
+      sudo apt-get install -qq
+          emacs24 emacs24-el emacs24-common-non-dfsg;
+    fi
+
+  - sudo apt-get install -qq $EMACS
 
 # run the tests
 script:
-  - curl -fsSkL https://raw.github.com/rejeep/carton/master/go | sh
-  - bash ~/.carton/bin/carton
-  - elpath=$(emacs -batch -q -no-site-file -eval "(message (apply 'concat (mapcar (lambda(x) (concat x \":\")) load-path)))" 2>&1)
-  - test_simple=/home/travis/build/rocky/emacs-loc-changes/elpa/test-simple-20130710.1126
-  - elpath=${elpath}${test_simple}
-  - # ls -lR /home/travis
-  - echo $elpath
-  - EMACSLOADPATH=$elpath /bin/sh ./autogen.sh && EMACSLOADPATH=$elpath make check
+  - NO_CHECK_EMACS_PACKAGES=1 /bin/bash ./autogen.sh && cd test && make check-elget

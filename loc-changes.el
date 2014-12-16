@@ -1,7 +1,7 @@
 ;;; loc-changes.el --- Helps users and programs keep track of positions even after buffer changes.
 
 ;; Author: Rocky Bernstein
-;; Version: 1.0
+;; Version: 1.1
 ;; URL: http://github.com/rocky/emacs-loc-changes
 ;; Compatibility: GNU Emacs 24.x
 
