@@ -9,10 +9,6 @@ EXTRA_DIST = $(lisp_files) $(test_files) README.md THANKS
 
 test_files := $(wildcard test/test-*.el)
 
-#: Run all tests without bloated output
-check-short:
-	$(MAKE) check 2>&1  | ruby make-check-filter.rb
-
 if MAINTAINER_MODE
 
 CL = ChangeLog
@@ -28,7 +24,7 @@ test: check
 
 #: Run all tests without bloated output
 check-short:
-	$(MAKE) check 2>&1  | ruby make-check-filter.rb
+	$(MAKE) check 2>&1  | ruby test/make-check-filter.rb
 
 check:
 	$(MAKE) -C test $@

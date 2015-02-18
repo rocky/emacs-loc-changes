@@ -1,25 +1,24 @@
-;;; loc-changes.el --- Helps users and programs keep track of positions even after buffer changes.
+;;; loc-changes.el --- keep track of positions even after buffer changes
 
-;; Author: Rocky Bernstein
-;; Version: 1.1
+;; Copyright (C) 2015 Free Software Foundation, Inc
+
+;; Author: Rocky Bernstein <rocky@gnu.org>
+;; Version: 1.2
 ;; URL: http://github.com/rocky/emacs-loc-changes
 ;; Compatibility: GNU Emacs 24.x
 
-;;  Copyright (C) 2013-2014 Rocky Bernstein <rocky@gnu.org>
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
 
-;; This program is free software: you can redistribute it and/or
-;; modify it under the terms of the GNU General Public License as
-;; published by the Free Software Foundation, either version 3 of the
-;; License, or (at your option) any later version.
-
-;; This program is distributed in the hope that it will be useful, but
-;; WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-;; General Public License for more details.
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
 
 ;; You should have received a copy of the GNU General Public License
-;; along with this program.  If not, see
-;; <http://www.gnu.org/licenses/>.
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
@@ -33,9 +32,6 @@
 
 ;; Another use might be in a compilation buffer for errors and
 ;; warnings which refer to file and line positions.
-
-;; Should be available via Melpa.
-
 
 ;;; Code:
 
@@ -222,5 +218,3 @@ NO-UPDATE is set, no mark is added."
   )
 
 (provide 'loc-changes)
-
-;;; loc-changes.el ends here
