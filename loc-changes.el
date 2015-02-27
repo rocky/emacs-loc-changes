@@ -42,6 +42,42 @@ their corresponding markers in the buffer. The 'key' is the line number; the val
 the marker"
   )
 
+(defun loc-changes:follow-mark(event)
+  (interactive "e")
+  (let* ((pos (posn-point (event-end event)))
+	 (mark (get-text-property pos 'mark)))
+    (switch-to-buffer-other-window  (marker-buffer mark))
+    (goto-char (marker-position mark))
+    ))
+
+
+(defun loc-changes:alist-describe (&optional opt-buffer)
+  "Display buffer-local variable loc-changes-alist. If BUFFER is
+not given, the current buffer is used. Information is put in an
+internal buffer called *Describe*."
+  (interactive "")
+  (let ((buffer (or opt-buffer (current-buffer)))
+	(alist))
+    (with-current-buffer buffer
+	  (setq alist loc-changes-alist)
+	  (unless (listp alist) (error "expecting loc-changes-alist to be a list"))
+	  )
+    (switch-to-buffer (get-buffer-create "*Describe*"))
+    (setq buffer-read-only 'nil)
+    (delete-region (point-min) (point-max))
+    (dolist (assoc alist)
+	  (put-text-property
+	   (insert-text-button
+	    (format "line %d: %s\n" (car assoc) (cdr assoc))
+	    'action 'loc-changes:follow-mark
+	    'help-echo "mouse-2: go to this location")
+	   (point)
+	   'mark (cdr assoc)
+	    )
+	  )
+    (setq buffer-read-only 't)
+    ))
+
 ;;;###autoload
 (defun loc-changes-goto-line (line-number &optional column-number)
   "Position `point' at LINE-NUMBER of the current buffer. If
