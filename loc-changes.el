@@ -38,14 +38,14 @@
 (make-variable-buffer-local 'loc-changes-alist)
 (defvar loc-changes-alist '()
   "A buffer-local association-list (alist) of line numbers and
-their corresponding markers in the buffer. The 'key' is the line number; the value
-the marker"
-  )
+their corresponding markers in the buffer. The 'key' is the line
+number; the a list of value the marker and the initial 10
+characters after that mark" )
 
 (defun loc-changes:follow-mark(event)
   (interactive "e")
   (let* ((pos (posn-point (event-end event)))
-	 (mark (get-text-property pos 'mark)))
+	 (mark (car (get-text-property pos 'mark))))
     (switch-to-buffer-other-window  (marker-buffer mark))
     (goto-char (marker-position mark))
     ))
@@ -68,12 +68,13 @@ internal buffer called *Describe*."
     (dolist (assoc alist)
 	  (put-text-property
 	   (insert-text-button
-	    (format "line %d: %s\n" (car assoc) (cdr assoc))
+	    (format "line %d: %s" (car assoc) (cadr assoc))
 	    'action 'loc-changes:follow-mark
 	    'help-echo "mouse-2: go to this location")
 	   (point)
 	   'mark (cdr assoc)
 	    )
+	  (insert (format ": %s\n" (caddr assoc)))
 	  )
     (setq buffer-read-only 't)
     ))
@@ -155,7 +156,8 @@ is okay to use in a Lisp program."
   "Add an element `loc-changes-alist'. The car will be POS and a
 marker for it will be created at the point."
   (setq loc-changes-alist
-	(cons (cons pos (point-marker)) loc-changes-alist)))
+	(cons (cons pos (list (point-marker) (buffer-substring (point) (point-at-eol))))
+		    loc-changes-alist)))
 
 ;;;###autoload
 (defun loc-changes-add-and-goto (line-number &optional opt-buffer)
@@ -242,7 +244,7 @@ NO-UPDATE is set, no mark is added."
 	   position))
   (let ((elt (assq position loc-changes-alist)))
     (if elt
-	(let ((marker (cdr elt)))
+	(let ((marker (cadr elt)))
 	  (unless (markerp marker)
 	    (error "Internal error: loc-changes-alist is not a marker"))
 	  (goto-char (marker-position marker)))
