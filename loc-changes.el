@@ -254,3 +254,4 @@ NO-UPDATE is set, no mark is added."
   )
 
 (provide 'loc-changes)
+;;; loc-changes.el ends here
