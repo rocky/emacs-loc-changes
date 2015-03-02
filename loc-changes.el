@@ -35,6 +35,8 @@
 
 ;;; Code:
 
+(eval-when-compile (require 'cl))
+
 (make-variable-buffer-local 'loc-changes-alist)
 (defvar loc-changes-alist '()
   "A buffer-local association-list (alist) of line numbers and
@@ -74,7 +76,7 @@ internal buffer called *Describe*."
 	   (point)
 	   'mark (cdr assoc)
 	    )
-	  (insert (format ": %s\n" (caddr assoc)))
+	  (insert (format ": %s\n" (cl-caddr assoc)))
 	  )
     (setq buffer-read-only 't)
     ))
@@ -88,7 +90,7 @@ the line starts at column 0, so the column number display will be one less
 than COLUMN-NUMBER. For example COLUMN-NUMBER 1 will set before the first
 column on the line and show 0.
 
-The Emacs `goto-line' docstring says it is the wrong to use that
+The Emacs `goto-line' docstring says it is wrong to use that
 function in a Lisp program. So here is something that I proclaim
 is okay to use in a Lisp program."
   (interactive
@@ -225,7 +227,8 @@ so that its positions are will be reflected."
 	  )
       (with-current-buffer buffer
 	(if elt
-	    (setcdr elt (point))
+	    (setcdr elt
+		    (list (point-marker) (buffer-substring (point) (point-at-eol))))
 	  (unless no-insert
 	    (loc-changes-add-elt line-number)
 	    )
