@@ -76,7 +76,7 @@ internal buffer called *Describe*."
 	   (point)
 	   'mark (cdr assoc)
 	    )
-	  (insert (format ": %s\n" (cl-caddr assoc)))
+	  (insert (format ":\t%s\n" (cl-caddr assoc)))
 	  )
     (setq buffer-read-only 't)
     ))
