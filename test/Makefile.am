@@ -49,7 +49,7 @@ check: $(CHECK_FILES)
 
 #: Run all tests via el-get
 check-elget:
-	(cd $(top_srcdir)/test && $(EMACS) --batch --no-site-file --no-splash --load ./install-pkgs.el --load test-basic.el)
+	(cd $(top_srcdir)/test && $(EMACS) --batch --no-site-file --no-splash --load ../el-get-install.el --load test-basic.el)
 
 #: Run all tests with minimum verbosity
 check-short:

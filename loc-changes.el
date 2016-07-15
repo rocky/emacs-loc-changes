@@ -1,6 +1,6 @@
 ;;; loc-changes.el --- keep track of positions even after buffer changes
 
-;; Copyright (C) 2015 Free Software Foundation, Inc
+;; Copyright (C) 2015, 2016 Free Software Foundation, Inc
 
 ;; Author: Rocky Bernstein <rocky@gnu.org>
 ;; Version: 1.2
@@ -40,7 +40,7 @@
 (make-variable-buffer-local 'loc-changes-alist)
 (defvar loc-changes-alist '()
   "A buffer-local association-list (alist) of line numbers and
-their corresponding markers in the buffer. The 'key' is the line
+their corresponding markers in the buffer. The key is the line
 number; the a list of value the marker and the initial 10
 characters after that mark" )
 
