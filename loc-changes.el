@@ -81,7 +81,6 @@ internal buffer called *Describe*."
     (setq buffer-read-only 't)
     ))
 
-;;;###autoload
 (defun loc-changes-goto-line (line-number &optional column-number)
   "Position `point' at LINE-NUMBER of the current buffer. If
 COLUMN-NUMBER is given, position `point' at that column just
@@ -161,7 +160,6 @@ marker for it will be created at the point."
 	(cons (cons pos (list (point-marker) (buffer-substring (point) (point-at-eol))))
 		    loc-changes-alist)))
 
-;;;###autoload
 (defun loc-changes-add-and-goto (line-number &optional opt-buffer)
   "Add a marker at LINE-NUMBER and record LINE-NUMBER and its
 marker association in `loc-changes-alist'."
@@ -198,7 +196,6 @@ marker association in `loc-changes-alist'."
       ))
   )
 
-;;;###autoload
 (defun loc-changes-clear-buffer (&optional opt-buffer)
   "Remove all location-tracking associations in BUFFER."
   (interactive "bbuffer: ")
@@ -209,7 +206,6 @@ marker association in `loc-changes-alist'."
       ))
   )
 
-;;;###autoload
 (defun loc-changes-reset-position (&optional opt-buffer no-insert)
   "Update `loc-changes-alist' so that the line number of point is
 used to when aline number is requested.
@@ -237,23 +233,24 @@ so that its positions are will be reflected."
     ))
 
 
-(defun loc-changes-goto (position &optional opt-buffer no-update)
-  "Go to the position inside BUFFER taking into account the
-previous location marks. Normally if the position hasn't been
-seen before, we will add a new mark for this position. However if
+(defun loc-changes-goto (line-number &optional opt-buffer no-update)
+  "Go to the LINE-NUMBER inside OPT-BUFFER taking into account the
+previous line-number marks. Normally if the line-number hasn't been
+seen before, we will add a new mark for this line-number. However if
 NO-UPDATE is set, no mark is added."
-  (unless (wholenump position)
+  ;;; FIXME: opt-buffer is not used
+  (unless (wholenump line-number)
     (error "Expecting line-number parameter `%s' to be a whole number"
-	   position))
-  (let ((elt (assq position loc-changes-alist)))
+	   line-number))
+  (let ((elt (assq line-number loc-changes-alist)))
     (if elt
 	(let ((marker (cadr elt)))
 	  (unless (markerp marker)
 	    (error "Internal error: loc-changes-alist is not a marker"))
 	  (goto-char (marker-position marker)))
       (if no-update
-	  (loc-changes-goto-line position)
-	(loc-changes-add-and-goto position))
+	  (loc-changes-goto-line line-number)
+	(loc-changes-add-and-goto line-number))
       )
     )
   )
