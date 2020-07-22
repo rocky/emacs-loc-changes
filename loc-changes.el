@@ -1,10 +1,10 @@
 ;;; loc-changes.el --- keep track of positions even after buffer changes
 
-;; Copyright (C) 2015, 2016 Free Software Foundation, Inc
+;; Copyright (C) 2015, 2016, 2020 Free Software Foundation, Inc
 
 ;; Author: Rocky Bernstein <rocky@gnu.org>
 ;; Version: 1.2
-;; URL: http://github.com/rocky/emacs-loc-changes
+;; URL: https://github.com/rocky/emacs-loc-changes
 ;; Compatibility: GNU Emacs 24.x
 
 ;; This program is free software; you can redistribute it and/or modify
