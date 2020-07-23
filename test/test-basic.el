@@ -31,8 +31,7 @@
 (assert-raises error (loc-changes-goto-line 10000))
 
 (note "loc-changes-goto-line")
-(save-excursion
-  (set-buffer sample-buffer)
+(with-current-buffer sample-buffer
   (loc-changes-goto-line 5)
   (assert-equal 5 (line-number-at-pos (point))))
 
@@ -46,8 +45,7 @@
   )
 
 (note "loc-changes-goto-line-invalid-column")
-(save-excursion
-  (set-buffer sample-buffer)
+(with-current-buffer sample-buffer
   (loc-changes-goto-line 1 300)
   (assert-equal 1 (line-number-at-pos (point)))
   ;; FIXME
@@ -69,8 +67,7 @@
 (assert-equal '() loc-changes-alist)
 
 (note "loc-changes-add-and-goto - update")
-(save-excursion
-  (set-buffer sample-buffer)
+(with-current-buffer sample-buffer
   (loc-changes-add-and-goto 10)
   (assert-equal 10 (line-number-at-pos)
 		"point should be at line 10")
@@ -82,8 +79,7 @@
   )
 
 (note "loc-changes-goto - update")
-(save-excursion
-  (set-buffer sample-buffer)
+(with-current-buffer sample-buffer
   (loc-changes-goto 11)
   (assert-equal 11 (line-number-at-pos)
 		"point should be at line 11")
@@ -95,8 +91,7 @@
   )
 
 (note "loc-changes-goto - no update")
-(save-excursion
-  (set-buffer sample-buffer)
+(with-current-buffer sample-buffer
   (loc-changes-goto 12 nil 't)
   (assert-equal 12 (line-number-at-pos)
 		"point should be at line 12")
