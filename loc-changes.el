@@ -35,6 +35,12 @@
 
 ;;; Code:
 
+;; Press C-x C-e at the end of the next line configure the program in GNU emacs
+;; for building via "make" to get set up.
+;; (compile (format "EMACSLOADPATH=:%s ./autogen.sh" "."))
+;; After that you can run:
+;; (compile "make check")
+
 (eval-when-compile (require 'cl))
 
 (make-variable-buffer-local 'loc-changes-alist)
