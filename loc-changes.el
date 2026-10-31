@@ -3,7 +3,7 @@
 ;; Copyright (C) 2015, 2016, 2020, 2026 Free Software Foundation, Inc
 
 ;; Author: Rocky Bernstein <rocky@gnu.org>
-;; Version: 1.3
+;; Version: 1.3.1
 ;; URL: https://github.com/rocky/emacs-loc-changes
 ;; Package-Requires: ((emacs "24.4") (compat "30.1.0.1"))
 ;; Compatibility: GNU Emacs 24.x
@@ -48,7 +48,7 @@
 (make-variable-buffer-local 'loc-changes-alist)
 (defvar loc-changes-alist '()
   "A buffer-local association-list (alist) of line numbers and
-their corresponding markers in the buffer. The key is the line
+their corresponding markers in the buffer.  The key is the line
 number; the a list of value the marker and the initial 10
 characters after that mark")
 
@@ -61,8 +61,8 @@ characters after that mark")
 
 
 (defun loc-changes:alist-describe (&optional opt-buffer)
-  "Display buffer-local variable loc-changes-alist. If BUFFER is
-not given, the current buffer is used. Information is put in an
+  "Display buffer-local variable `loc-changes-alist'.  If BUFFER is
+not given, the current buffer is used.  Information is put in an
 internal buffer called *Describe*."
   (interactive "")
   (let ((buffer (or opt-buffer (current-buffer)))
@@ -70,7 +70,7 @@ internal buffer called *Describe*."
     (with-current-buffer buffer
       (setq alist loc-changes-alist)
       (unless (listp alist)
-        (error "expecting loc-changes-alist to be a list")))
+        (error "Expecting loc-changes-alist to be a list")))
     (switch-to-buffer (get-buffer-create "*Describe*"))
     (setq buffer-read-only 'nil)
     (delete-region (point-min) (point-max))
@@ -87,15 +87,15 @@ internal buffer called *Describe*."
     (setq buffer-read-only 't)))
 
 (defun loc-changes-goto-line (line-number &optional column-number)
-  "Position `point' at LINE-NUMBER of the current buffer. If
+  "Position `point' at LINE-NUMBER of the current buffer.  If
 COLUMN-NUMBER is given, position `point' at that column just
-before that column number within the line. Note that the beginning of
+before that column number within the line.  Note that the beginning of
 the line starts at column 0, so the column number display will be one less
-than COLUMN-NUMBER. For example COLUMN-NUMBER 1 will set before the first
+than COLUMN-NUMBER.  For example COLUMN-NUMBER 1 will set before the first
 column on the line and show 0.
 
 The Emacs `goto-line' docstring says it is wrong to use that
-function in a Lisp program. So here is something that I proclaim
+function in a Lisp program.  So here is something that I proclaim
 is okay to use in a Lisp program."
   (interactive
    (if (and current-prefix-arg (not (consp current-prefix-arg)))
@@ -163,7 +163,7 @@ is okay to use in a Lisp program."
     (redisplay)))
 
 (defun loc-changes-add-elt (pos)
-  "Add an element `loc-changes-alist'. The car will be POS and a
+  "Add an element `loc-changes-alist'.  The car will be POS and a
 marker for it will be created at the point."
   (setq loc-changes-alist
         (cons
@@ -243,8 +243,8 @@ so that its positions are will be reflected."
 
 (defun loc-changes-goto (line-number &optional opt-buffer no-update)
   "Go to the LINE-NUMBER inside OPT-BUFFER taking into account the
-previous line-number marks. Normally if the line-number hasn't been
-seen before, we will add a new mark for this line-number. However if
+previous line-number marks.  Normally if the line-number hasn't been
+seen before, we will add a new mark for this line-number.  However if
 NO-UPDATE is set, no mark is added."
   ;;; FIXME: opt-buffer is not used
   (unless (wholenump line-number)
